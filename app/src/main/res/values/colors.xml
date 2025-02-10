@@ -1,0 +1,45 @@
+<resources>
+    <!-- Couleurs principales -->
+    <color name="colorPrimary">#6200EE</color> <!-- Violet -->
+    <color name="colorPrimaryVariant">#3700B3</color> <!-- Violet foncé -->
+    <color name="colorAccent">#03DAC5</color> <!-- Cyan -->
+    <color name="colorOnPrimary">#FFFFFF</color> <!-- Blanc pour texte sur primary -->
+
+    <!-- Couleurs secondaires -->
+    <color name="colorSecondary">#FF9800</color> <!-- Orange -->
+    <color name="colorSecondaryVariant">#F57C00</color> <!-- Orange foncé -->
+    <color name="colorOnSecondary">#FFFFFF</color> <!-- Texte sur secondary -->
+
+    <!-- Couleurs de fond et surface -->
+    <color name="colorBackground">#F5F5F5</color> <!-- Gris clair -->
+    <color name="colorOnBackground">#000000</color> <!-- Texte sur background -->
+    <color name="colorSurface">#FFFFFF</color> <!-- Blanc pour cartes -->
+    <color name="colorOnSurface">#000000</color> <!-- Texte sur surface -->
+
+    <!-- Couleurs des événements -->
+    <color name="eventColor1">#FF5252</color> <!-- Rouge -->
+    <color name="eventColor2">#4CAF50</color> <!-- Vert -->
+    <color name="eventColor3">#03A9F4</color> <!-- Bleu -->
+    <color name="eventColor4">#E91E63</color> <!-- Rose -->
+
+    <!-- Couleurs des boutons -->
+    <color name="buttonColor">#6200EE</color> <!-- Violet -->
+    <color name="buttonTextColor">#FFFFFF</color> <!-- Blanc -->
+
+    <!-- Fond de l’application -->
+    <color name="background_light">#FAFAFA</color>
+
+        <color name="colorPrimaryDark">#121212</color> <!-- Noir-gris foncé -->
+        <color name="colorPrimaryDarker">#1E1E1E</color> <!-- Légèrement plus foncé -->
+
+        <color name="colorSecondaryDark">#03DAC5</color> <!-- Cyan Material Design -->
+        <color name="colorSecondaryDarker">#018786</color> <!-- Teinte plus foncée -->
+
+        <color name="backgroundDark">#000000</color> <!-- Noir profond -->
+        <color name="surfaceDark">#1C1C1C</color> <!-- Fond des cartes -->
+
+        <color name="white">#FFFFFF</color>
+        <color name="black">#000000</color>
+
+
+</resources>

@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Agenda</string>
+    <string name="title_activity_main">My Agenda</string>
+    <string name="event">Today\'s events</string>
+    <string name="hint_title">Event title</string>
+    <string name="date">Date</string>
+    <string name="select_date">Select a date</string>
+    <string name="select_time">Select a time</string>
+    <string name="start_time">Start time</string>
+    <string name="end_time">End time</string>
+    <string name="description">Description</string>
+    <string name="save_event">Save event</string>
+    <string name="no_event">No event</string>
+</resources>

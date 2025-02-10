@@ -1,0 +1,22 @@
+<resources xmlns:tools="http://schemas.android.com/tools">
+    <style name="Theme.Agenda" parent="Theme.MaterialComponents.Light.NoActionBar">
+        <!-- Couleurs principales -->
+        <item name="colorPrimary">@color/eventColor2</item>
+        <item name="colorPrimaryVariant">@color/colorSecondaryDarker</item>
+        <item name="colorOnPrimary">@color/colorOnPrimary</item>
+
+        <item name="colorSecondary">@color/colorSecondary</item>
+        <item name="colorSecondaryVariant">@color/colorSecondaryVariant</item>
+        <item name="colorOnSecondary">@color/colorOnSecondary</item>
+
+        <!-- Fond et surface -->
+        <item name="android:colorBackground">@color/colorBackground</item>
+        <item name="colorOnBackground">@color/colorOnBackground</item>
+
+        <item name="colorSurface">@color/colorSurface</item>
+        <item name="colorOnSurface">@color/colorOnSurface</item>
+
+        <!-- Boutons -->
+        <item name="colorButtonNormal">@color/eventColor2</item>
+    </style>
+</resources>

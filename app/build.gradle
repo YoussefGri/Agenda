@@ -1,0 +1,63 @@
+plugins {
+    alias(libs.plugins.android.application)
+}
+
+android {
+    namespace 'com.example.agenda'
+    compileSdk 35
+
+    defaultConfig {
+        applicationId "com.example.agenda"
+        minSdk 24
+        targetSdk 35
+        versionCode 1
+        versionName "1.0"
+
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+        }
+    }
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_11
+        targetCompatibility JavaVersion.VERSION_11
+    }
+}
+
+dependencies {
+
+    implementation libs.appcompat
+    implementation libs.material
+    testImplementation libs.junit
+    androidTestImplementation libs.ext.junit
+    androidTestImplementation libs.espresso.core
+    implementation libs.material.calendar.view
+    // Room Database
+    implementation "androidx.room:room-runtime:2.5.2"
+    annotationProcessor "androidx.room:room-compiler:2.5.2"
+
+    // RecyclerView
+    implementation "androidx.recyclerview:recyclerview:1.2.1"
+
+    // Material Design (UI)
+    implementation 'com.google.android.material:material:1.9.0'
+
+    // CalendarView (Applandeo pour une meilleure gestion du calendrier)
+    implementation 'com.applandeo:material-calendar-view:1.9.0'
+
+    // Lifecycle components (ViewModel, LiveData)
+    implementation "androidx.lifecycle:lifecycle-livedata-ktx:2.6.1"
+    implementation "androidx.lifecycle:lifecycle-viewmodel-ktx:2.6.1"
+
+    // WorkManager (pour gérer les notifications d'événements)
+    implementation "androidx.work:work-runtime-ktx:2.8.1"
+
+    // Glide (pour charger les images)
+    implementation "com.github.bumptech.glide:glide:4.14.2"
+    annotationProcessor "com.github.bumptech.glide:compiler:4.14.2"
+
+}
