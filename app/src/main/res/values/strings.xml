@@ -10,5 +10,9 @@
     <string name="end_time">Heure de fin</string>
     <string name="description">Description</string>
     <string name="save_event">Enregistrer l\'événement</string>
-    <string name="no_event">Aucun Evenement</string>
+    <string name="no_event">Aucun Événement</string>
+    <string name="deleted_event">Événement supprimé</string>
+    <string name="empty_fields">Certains champs sont vides</string>
+    <string name="added_event">Événement ajouté</string>
+    <string name="updated_event">Événement modifié</string>
 </resources>

@@ -12,4 +12,8 @@
     <string name="description">Description</string>
     <string name="save_event">Save event</string>
     <string name="no_event">No event</string>
+    <string name="deleted_event">Event deleted successfully</string>
+    <string name="empty_fields">Some fields are empty</string>
+    <string name="added_event">Event added successfully</string>
+    <string name="updated_event">Changes successfully applied</string>
 </resources>

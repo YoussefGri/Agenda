@@ -10,9 +10,10 @@ import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 import com.example.agenda.database.EventDatabase;
 import com.example.agenda.model.Event;
-import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Locale;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 public class AddEventActivity extends AppCompatActivity {
 
@@ -20,6 +21,8 @@ public class AddEventActivity extends AppCompatActivity {
     private Button btnSelectDate, btnSelectStartTime, btnSelectEndTime, btnSaveEvent;
     private String selectedDate, selectedStartTime, selectedEndTime;
     private EventDatabase db;
+    private int eventId = -1; // Par défaut, pas d'événement existant
+    private Event existingEvent; // Pour stocker l'événement en modification
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -35,17 +38,23 @@ public class AddEventActivity extends AppCompatActivity {
         btnSelectEndTime = findViewById(R.id.btnSelectEndTime);
         btnSaveEvent = findViewById(R.id.btnSaveEvent);
 
-        // Récupérer la date sélectionnée si elle vient du calendrier
+        // Récupération des données de l'intent
         selectedDate = getIntent().getStringExtra("selectedDate");
+        eventId = getIntent().getIntExtra("eventId", -1); // Vérifie si un ID est passé
+
         if (selectedDate != null) {
             btnSelectDate.setText(selectedDate);
+        }
+
+        if (eventId != -1) { // Mode édition : Charger l'événement
+            loadExistingEvent(eventId);
         }
 
         btnSelectDate.setOnClickListener(v -> showDatePicker());
         btnSelectStartTime.setOnClickListener(v -> showTimePicker(true));
         btnSelectEndTime.setOnClickListener(v -> showTimePicker(false));
 
-        btnSaveEvent.setOnClickListener(v -> saveEvent());
+        btnSaveEvent.setOnClickListener(v -> saveOrUpdateEvent());
     }
 
     private void showDatePicker() {
@@ -82,23 +91,61 @@ public class AddEventActivity extends AppCompatActivity {
         timePickerDialog.show();
     }
 
-    private void saveEvent() {
+    private void loadExistingEvent(int eventId) {
+        ExecutorService executor = Executors.newSingleThreadExecutor();
+        executor.execute(() -> {
+            existingEvent = db.eventDao().getEventById(eventId);
+            runOnUiThread(() -> {
+                if (existingEvent != null) {
+                    etEventTitle.setText(existingEvent.getTitle());
+                    etEventDescription.setText(existingEvent.getDescription());
+                    btnSelectDate.setText(existingEvent.getDate());
+                    btnSelectStartTime.setText(existingEvent.getTimeStart());
+                    btnSelectEndTime.setText(existingEvent.getTimeEnd());
+                    selectedDate = existingEvent.getDate();
+                    selectedStartTime = existingEvent.getTimeStart();
+                    selectedEndTime = existingEvent.getTimeEnd();
+                }
+            });
+        });
+    }
+
+    private void saveOrUpdateEvent() {
         String title = etEventTitle.getText().toString().trim();
         String description = etEventDescription.getText().toString().trim();
 
         if (title.isEmpty() || selectedDate == null || selectedStartTime == null || selectedEndTime == null) {
-            Toast.makeText(this, "Veuillez remplir tous les champs", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, getString(R.string.empty_fields), Toast.LENGTH_SHORT).show();
             return;
         }
 
-        Event event = new Event(title, description, selectedDate, selectedStartTime, selectedEndTime);
+        ExecutorService executor = Executors.newSingleThreadExecutor();
 
-        new Thread(() -> {
-            db.eventDao().insert(event);
-            runOnUiThread(() -> {
-                Toast.makeText(this, "Événement ajouté", Toast.LENGTH_SHORT).show();
-                finish();
+        if (eventId == -1) {
+            // Mode ajout : Création d'un nouvel événement
+            Event event = new Event(title, description, selectedDate, selectedStartTime, selectedEndTime);
+            executor.execute(() -> {
+                db.eventDao().insert(event);
+                runOnUiThread(() -> {
+                    Toast.makeText(this, getString(R.string.added_event), Toast.LENGTH_SHORT).show();
+                    finish();
+                });
             });
-        }).start();
+        } else {
+            // Mode modification : Mise à jour de l'événement existant
+            existingEvent.setTitle(title);
+            existingEvent.setDescription(description);
+            existingEvent.setDate(selectedDate);
+            existingEvent.setTimeStart(selectedStartTime);
+            existingEvent.setTimeEnd(selectedEndTime);
+
+            executor.execute(() -> {
+                db.eventDao().update(existingEvent);
+                runOnUiThread(() -> {
+                    Toast.makeText(this, getString(R.string.updated_event), Toast.LENGTH_SHORT).show();
+                    finish();
+                });
+            });
+        }
     }
 }

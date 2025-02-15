@@ -1,5 +1,4 @@
-<androidx.cardview.widget.CardView
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
@@ -14,14 +13,48 @@
         android:orientation="vertical"
         android:padding="16dp">
 
-        <!-- Titre de l'événement -->
-        <TextView
-            android:id="@+id/tvEventTitle"
+        <!-- Titre de l'événement + Boutons Modifier/Supprimer -->
+        <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:textSize="18sp"
-            android:textStyle="bold"
-            android:textColor="@android:color/black"/>
+            android:layout_height="wrap_content">
+
+            <!-- Titre -->
+            <TextView
+                android:id="@+id/tvEventTitle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="18sp"
+                android:textStyle="bold"
+                android:textColor="@android:color/black"
+                android:layout_alignParentStart="true"
+                android:layout_centerVertical="true"/>
+
+            <!-- Boutons Modifier et Supprimer -->
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:layout_alignParentEnd="true"
+                android:layout_centerVertical="true">
+
+                <ImageButton
+                    android:id="@+id/btnEdit"
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:src="@drawable/baseline_edit_24"
+                    android:background="?attr/selectableItemBackgroundBorderless"
+                    android:contentDescription="Modifier"/>
+
+                <ImageButton
+                    android:id="@+id/btnDelete"
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:src="@drawable/baseline_delete_outline_24"
+                    android:background="?attr/selectableItemBackgroundBorderless"
+                    android:contentDescription="Supprimer"/>
+            </LinearLayout>
+
+        </RelativeLayout>
 
         <!-- Heure de début et fin -->
         <TextView
@@ -40,6 +73,7 @@
             android:textSize="14sp"
             android:textColor="@android:color/black"
             android:layout_marginTop="4dp"/>
+
     </LinearLayout>
 
 </androidx.cardview.widget.CardView>
