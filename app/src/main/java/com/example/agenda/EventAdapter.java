@@ -3,22 +3,21 @@ package com.example.agenda;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 import com.example.agenda.model.Event;
+import java.util.ArrayList;
 import java.util.List;
 
 public class EventAdapter extends RecyclerView.Adapter<EventAdapter.ViewHolder> {
 
-    private List<Event> events;
-    private MainActivity mainActivity;
+    private List<Event> events = new ArrayList<>();
+    private EventActionListener eventActionListener;
 
-    public EventAdapter(List<Event> events, MainActivity mainActivity) {
-        this.events = events;
-        this.mainActivity = mainActivity;
+    public EventAdapter(EventActionListener eventActionListener) {
+        this.eventActionListener = eventActionListener;
     }
 
     @NonNull
@@ -35,16 +34,33 @@ public class EventAdapter extends RecyclerView.Adapter<EventAdapter.ViewHolder> 
         holder.tvTime.setText("🕒 " + event.getTimeStart() + " - " + event.getTimeEnd());
         holder.tvDescription.setText(event.getDescription());
 
-        // Bouton modifier
-        holder.btnEdit.setOnClickListener(v -> mainActivity.editEvent(event));
-
-        // Bouton supprimer
-        holder.btnDelete.setOnClickListener(v -> mainActivity.deleteEvent(event));
+        holder.btnEdit.setOnClickListener(v -> eventActionListener.onEditEvent(event, holder.getAdapterPosition()));
+        holder.btnDelete.setOnClickListener(v -> eventActionListener.onDeleteEvent(event, holder.getAdapterPosition()));
     }
 
     @Override
     public int getItemCount() {
         return events.size();
+    }
+
+    public void setEvents(List<Event> newEvents) {
+        this.events.clear();
+        this.events.addAll(newEvents);
+        notifyDataSetChanged();
+    }
+
+    public void updateEvent(int position, Event updatedEvent) {
+        if (position >= 0 && position < events.size()) {
+            events.set(position, updatedEvent);
+            notifyItemChanged(position);
+        }
+    }
+
+    public void removeEvent(int position) {
+        if (position >= 0 && position < events.size()) {
+            events.remove(position);
+            notifyItemRemoved(position);
+        }
     }
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
@@ -59,5 +75,10 @@ public class EventAdapter extends RecyclerView.Adapter<EventAdapter.ViewHolder> 
             btnEdit = itemView.findViewById(R.id.btnEdit);
             btnDelete = itemView.findViewById(R.id.btnDelete);
         }
+    }
+
+    public interface EventActionListener {
+        void onEditEvent(Event event, int position);
+        void onDeleteEvent(Event event, int position);
     }
 }

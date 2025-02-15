@@ -7,11 +7,9 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-
 import com.applandeo.materialcalendarview.CalendarView;
 import com.example.agenda.database.EventDatabase;
 import com.example.agenda.model.Event;
-
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.List;
@@ -19,7 +17,7 @@ import java.util.Locale;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements EventAdapter.EventActionListener {
 
     private CalendarView calendarView;
     private RecyclerView recyclerView;
@@ -27,7 +25,7 @@ public class MainActivity extends AppCompatActivity {
     private EventDatabase db;
     private String selectedDate;
     private static final int ADD_EVENT_REQUEST = 1;
-    private static final int EDIT_EVENT_REQUEST = 2; // Ajout pour la modification
+    private static final int EDIT_EVENT_REQUEST = 2;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -39,18 +37,18 @@ public class MainActivity extends AppCompatActivity {
         recyclerView = findViewById(R.id.recyclerViewEvents);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
 
-        // Sélectionner la date actuelle par défaut
+        eventAdapter = new EventAdapter(this);
+        recyclerView.setAdapter(eventAdapter);
+
         selectedDate = new SimpleDateFormat("dd/MM/yyyy", Locale.FRANCE).format(Calendar.getInstance().getTime());
         loadEvents(selectedDate);
 
-        // Listener pour la sélection d'une date
         calendarView.setOnDayClickListener(eventDay -> {
             selectedDate = new SimpleDateFormat("dd/MM/yyyy", Locale.FRANCE)
                     .format(eventDay.getCalendar().getTime());
             loadEvents(selectedDate);
         });
 
-        // Bouton pour ajouter un événement
         findViewById(R.id.fabAddEvent).setOnClickListener(v -> {
             Intent intent = new Intent(MainActivity.this, AddEventActivity.class);
             intent.putExtra("selectedDate", selectedDate);
@@ -58,53 +56,45 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
-    /**
-     * Charge les événements associés à une date
-     */
     private void loadEvents(String date) {
-        new Thread(() -> {
+        ExecutorService executor = Executors.newSingleThreadExecutor();
+        executor.execute(() -> {
             List<Event> events = db.eventDao().getEventsByDate(date);
-            runOnUiThread(() -> {
-                eventAdapter = new EventAdapter(events, this);
-                recyclerView.setAdapter(eventAdapter);
-                if (events.isEmpty()) {
-                    Toast.makeText(this, getString(R.string.no_event), Toast.LENGTH_SHORT).show();
-                }
-            });
-        }).start();
+            runOnUiThread(() -> updateEventList(events));
+        });
     }
 
-    /**
-     * Rafraîchit la liste après l'ajout, la modification ou la suppression d'un événement
-     */
+    private void updateEventList(List<Event> events) {
+        eventAdapter.setEvents(events);
+        if (events.isEmpty()) {
+            Toast.makeText(this, getString(R.string.no_event), Toast.LENGTH_SHORT).show();
+        }
+    }
+
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if ((requestCode == ADD_EVENT_REQUEST || requestCode == EDIT_EVENT_REQUEST) && resultCode == RESULT_OK) {
-            loadEvents(selectedDate); // Recharger les événements après ajout/modification
+            loadEvents(selectedDate);
         }
     }
 
-    /**
-     * Supprime un événement
-     */
-    public void deleteEvent(Event event) {
+    @Override
+    public void onEditEvent(Event event, int position) {
+        Intent intent = new Intent(MainActivity.this, AddEventActivity.class);
+        intent.putExtra("eventId", event.getId());
+        startActivityForResult(intent, EDIT_EVENT_REQUEST);
+    }
+
+    @Override
+    public void onDeleteEvent(Event event, int position) {
         ExecutorService executor = Executors.newSingleThreadExecutor();
         executor.execute(() -> {
             db.eventDao().delete(event);
             runOnUiThread(() -> {
+                eventAdapter.removeEvent(position);
                 Toast.makeText(MainActivity.this, getString(R.string.deleted_event), Toast.LENGTH_SHORT).show();
-                loadEvents(selectedDate);
             });
         });
-    }
-
-    /**
-     * Lance l'activité de modification d'un événement
-     */
-    public void editEvent(Event event) {
-        Intent intent = new Intent(MainActivity.this, AddEventActivity.class);
-        intent.putExtra("eventId", event.getId()); // On passe l'ID de l'événement
-        startActivityForResult(intent, EDIT_EVENT_REQUEST);
     }
 }

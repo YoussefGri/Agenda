@@ -5,8 +5,8 @@
         <item name="colorPrimaryVariant">@color/colorSecondaryDarker</item>
         <item name="colorOnPrimary">@color/colorOnPrimary</item>
 
-        <item name="colorSecondary">@color/colorSecondary</item>
-        <item name="colorSecondaryVariant">@color/colorSecondaryVariant</item>
+        <item name="colorSecondary">#4BA84F</item>
+        <item name="colorSecondaryVariant">#0A8282</item>
         <item name="colorOnSecondary">@color/colorOnSecondary</item>
 
         <!-- Fond et surface -->
